@@ -26,7 +26,8 @@ packages:
 
 #本地分支跟踪远程分支  git branch --set-upstream-to=origin/master master
 
-#nuxt网络问题
+#nuxt网络问题 
+# 在 C:\Windows\System32\drivers\etc\hosts 文件中添加下面内容
 #  185.199.108.133 raw.githubusercontent.com
 
 
