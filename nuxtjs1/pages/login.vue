@@ -33,10 +33,17 @@ async function fun1(message: string) {
 
     const res = await useFetch("/api/hello");
     console.log("接口请求数据---res", res.data.value);
+    router.push("/home");
 
 
 
 }
 
-console.log('login.vue');
+
+definePageMeta({
+    layout: false,
+    path: "/login",
+    alias: "/login",
+
+});
 </script>

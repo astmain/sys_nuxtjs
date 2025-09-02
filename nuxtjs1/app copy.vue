@@ -3,15 +3,9 @@
     <!-- <NuxtRouteAnnouncer />
     <NuxtWelcome /> -->
 
+    <h1>123</h1>
 
-
-
-
-
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-
+    <NuxtPage />
 
   </div>
 </template>
