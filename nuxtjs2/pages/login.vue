@@ -43,7 +43,7 @@ async function fun1(message: string) {
 definePageMeta({
     layout: false,
     path: "/login",
-    alias: "/login",
+    alias: "/",
 
 });
 </script>
