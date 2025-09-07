@@ -155,19 +155,30 @@
               <p class="text-sm text-gray-500 mt-1">欢迎使用管理系统</p>
             </div>
             
-            <div class="flex items-center space-x-6">
+            <div class="flex items-center space-x-4">
+              <!-- 主题切换按钮 -->
+              <el-button 
+                @click="toggleTheme" 
+                :type="isDark ? 'primary' : 'default'"
+                size="default"
+                class="rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105"
+              >
+                <span class="mr-2">{{ isDark ? '🌙' : '☀️' }}</span>
+                {{ isDark ? '深色' : '浅色' }}
+              </el-button>
+
               <!-- 用户信息 -->
-              <div class="flex items-center space-x-3 bg-gray-50 rounded-xl px-4 py-2">
+              <div class="flex items-center space-x-3 bg-gray-50 dark:bg-gray-800 rounded-xl px-4 py-2">
                 <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
                   <span class="text-white text-sm font-semibold">
                     {{ (authStore.user?.realName || authStore.user?.username || 'U').charAt(0).toUpperCase() }}
                   </span>
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-900">
+                  <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
                     {{ authStore.user?.realName || authStore.user?.username }}
                   </p>
-                  <p class="text-xs text-gray-500">管理员</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">管理员</p>
                 </div>
               </div>
               
@@ -198,6 +209,7 @@
 
 <script setup>
 const authStore = useAuthStore()
+const { isDark, toggleTheme } = useTheme()
 
 const pageTitle = computed(() => {
   const titles: Record<string, string> = {
