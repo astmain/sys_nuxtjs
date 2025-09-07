@@ -1,0 +1,22 @@
+{
+  "name": "nuxtjs2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@element-plus/nuxt": "^1.1.4",
+    "@pinia/nuxt": "^0.11.2",
+    "element-plus": "^2.11.1",
+    "nuxt": "^3.18.1",
+    "pinia": "^3.0.3",
+    "pinia-plugin-persistedstate": "^4.5.0",
+    "vue": "^3.5.20",
+    "vue-router": "^4.5.1"
+  }
+}
