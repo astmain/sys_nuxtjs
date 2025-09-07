@@ -8,14 +8,211 @@ datasource db {
   url      = "file:./sqlite.db"
 }
 
-model   tb_demo{
-  id            Int     @id @default(autoincrement())
-    name      String?  // 昵称
+// 用户表
+model User {
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  email       String   @unique
+  password    String
+  realName    String?  // 真实姓名
+  phone       String?  // 手机号
+  avatar      String?  // 头像
+  status      Int      @default(1) // 1:正常 0:禁用
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联关系
+  userDepartments UserDepartment[]
+  userRoles       UserRole[]
+  articles        Article[]
+  articleReviews  ArticleReview[]
+  
+  @@map("users")
+}
+
+// 部门表
+model Department {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  parentId    Int?     // 父部门ID
+  level       Int      @default(1) // 部门层级
+  sort        Int      @default(0) // 排序
+  status      Int      @default(1) // 1:正常 0:禁用
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联关系
+  parent       Department?  @relation("DepartmentHierarchy", fields: [parentId], references: [id])
+  children     Department[] @relation("DepartmentHierarchy")
+  userDepartments UserDepartment[]
+  departmentRoles DepartmentRole[]
+  
+  @@map("departments")
+}
+
+// 角色表
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  status      Int      @default(1) // 1:正常 0:禁用
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联关系
+  userRoles       UserRole[]
+  departmentRoles DepartmentRole[]
+  rolePermissions RolePermission[]
+  
+  @@map("roles")
+}
+
+// 权限表
+model Permission {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  code        String   @unique // 权限代码，如 article:create
+  description String?
+  type        String   // 权限类型：menu, button, api
+  parentId    Int?     // 父权限ID
+  level       Int      @default(1) // 权限层级
+  sort        Int      @default(0) // 排序
+  status      Int      @default(1) // 1:正常 0:禁用
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联关系
+  parent       Permission?  @relation("PermissionHierarchy", fields: [parentId], references: [id])
+  children     Permission[] @relation("PermissionHierarchy")
+  rolePermissions RolePermission[]
+  
+  @@map("permissions")
+}
+
+// 用户部门关联表
+model UserDepartment {
+  id           Int  @id @default(autoincrement())
+  userId       Int
+  departmentId Int
+  createdAt    DateTime @default(now())
+  
+  // 关联关系
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, departmentId])
+  @@map("user_departments")
+}
+
+// 用户角色关联表
+model UserRole {
+  id     Int @id @default(autoincrement())
+  userId Int
+  roleId Int
+  createdAt DateTime @default(now())
+  
+  // 关联关系
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+// 部门角色关联表
+model DepartmentRole {
+  id           Int  @id @default(autoincrement())
+  departmentId Int
+  roleId       Int
+  createdAt    DateTime @default(now())
+  
+  // 关联关系
+  department Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  
+  @@unique([departmentId, roleId])
+  @@map("department_roles")
+}
+
+// 角色权限关联表
+model RolePermission {
+  id           Int @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+  createdAt    DateTime @default(now())
+  
+  // 关联关系
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  
+  @@unique([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+// 文章分类表
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  parentId    Int?     // 父分类ID
+  level       Int      @default(1) // 分类层级
+  sort        Int      @default(0) // 排序
+  status      Int      @default(1) // 1:正常 0:禁用
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联关系
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryHierarchy")
+  articles  Article[]
+  
+  @@map("categories")
+}
+
+// 文章表
+model Article {
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String   
+  summary     String?  // 摘要
+  coverImage  String?  // 封面图片
+  status      Int      @default(0) // 0:草稿 1:待审核 2:已发布 3:已拒绝
+  isTop       Boolean  @default(false) // 是否置顶
+  viewCount   Int      @default(0) // 浏览次数
+  likeCount   Int      @default(0) // 点赞次数
+  authorId    Int      // 作者ID
+  categoryId  Int?     // 分类ID
+  publishedAt DateTime? // 发布时间
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // 关联关系
+  author  User           @relation(fields: [authorId], references: [id])
+  category Category?     @relation(fields: [categoryId], references: [id])
+  reviews  ArticleReview[]
+  
+  @@map("articles")
+}
+
+// 文章审核表
+model ArticleReview {
+  id        Int      @id @default(autoincrement())
+  articleId Int
+  reviewerId Int     // 审核人ID
+  status    Int      // 1:通过 2:拒绝
+  comment   String?  // 审核意见
+  createdAt DateTime @default(now())
+  
+  // 关联关系
+  article  Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  reviewer User    @relation(fields: [reviewerId], references: [id])
+  
+  @@map("article_reviews")
 }
 
 
 
-// 帮我用prisma 设计 用户管理权限系统 用户,部门,用户可以有多个部门,每个角色在部门中有特定的权限
-// 我的nuxtjs3项目 有文章管理,文章审核,文章分类,文章发布功能,用户管理,部门管理,角色管理,权限管理
+
 
 

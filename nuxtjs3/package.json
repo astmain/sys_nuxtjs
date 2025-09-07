@@ -4,30 +4,35 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
-    "dev:generate": "  npx prisma generate ",
-    "dev:push": "      npx prisma db push   ",
+    "dev:generate": "npx prisma generate",
+    "dev:push": "npx prisma db push",
+    "dev:seed": "npx prisma db seed",
     "build": "nuxt build",
-
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-
-
     "postinstall": "nuxt prepare"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@element-plus/nuxt": "^1.1.4",
     "@pinia/nuxt": "^0.11.2",
     "element-plus": "^2.11.1",
     "nuxt": "^3.18.1",
-
     "pinia": "^3.0.3",
     "prisma": "^6.11.1",
     "pinia-plugin-persistedstate": "^4.5.0",
     "vue": "^3.5.20",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
-    "@prisma/client": "^6.11.1"
+    "@prisma/client": "^6.11.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6",
+    "tsx": "^4.7.0"
   }
 
 }
